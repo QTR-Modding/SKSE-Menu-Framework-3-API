@@ -62,8 +62,8 @@ namespace SKSEMenuFramework {
 
         typedef void(__stdcall* EventCallback)(EventType eventType);
 
-        using RegisterEventFuction = int64_t (*)(EventCallback callback, float priority);
-        using UnregisterEventFuction = void (*)(int64_t id);
+        using RegisterEventFunction = int64_t (*)(EventCallback callback, float priority);
+        using UnregisterEventFunction = void (*)(int64_t id);
 
         using ActionFunction = void (*)();
         using PushFontFunction = void (*)(const char* name);
@@ -72,15 +72,15 @@ namespace SKSEMenuFramework {
         using GetMainWindowFunction = Model::WindowInterface* (*)();
         using AddSectionItemFunction = void (*)(const char* path, RenderFunction rendererFunction);
 
-        using RegisterInputEventFuction = int64_t (*)(InputEventCallback callback);
-        using UnregisterInputEventFuction = void (*)(uint64_t id);
+        using RegisterInputEventFunction = int64_t (*)(InputEventCallback callback);
+        using UnregisterInputEventFunction = void (*)(uint64_t id);
 
-        using RegisterHudElementFuction = int64_t (*)(HudElementCallback callback);
-        using UnregisterHudElementFuction = void (*)(uint64_t id);
-        using IsAnyBlockingWindowOpenedFuction = bool (*)();
-        using SetWindowsPauseGameFuction = void (*)(bool pause);
-        using LoadTextureFuction = ImGuiMCP::ImTextureID (*)(const char* texturePath, ImGuiMCP::ImVec2* size);
-        using DisposeTextureFuction = void (*)(const char* texturePath);
+        using RegisterHudElementFunction = int64_t (*)(HudElementCallback callback);
+        using UnregisterHudElementFunction = void (*)(uint64_t id);
+        using IsAnyBlockingWindowOpenedFunction = bool (*)();
+        using SetWindowsPauseGameFunction = void (*)(bool pause);
+        using LoadTextureFunction = ImGuiMCP::ImTextureID (*)(const char* texturePath, ImGuiMCP::ImVec2* size);
+        using DisposeTextureFunction = void (*)(const char* texturePath);
         using GetMenuFrameworkVersionFunction = float (*)();
         using SetHotkeyEnabledFunction = void (*)(bool enabled);
         using IsHotkeyEnabledFunction = bool (*)();
@@ -90,13 +90,13 @@ namespace SKSEMenuFramework {
 
         public:
             InputEvent(InputEventCallback callback) {
-                static auto func = Internal::GetFunction<RegisterInputEventFuction>("RegisterInpoutEvent");
+                static auto func = Internal::GetFunction<RegisterInputEventFunction>("RegisterInputEvent");
                 if (func) {
                     id = func(callback);
                 }
             }
             ~InputEvent() {
-                static auto func = Internal::GetFunction<UnregisterInputEventFuction>("UnregisterInputEvent");
+                static auto func = Internal::GetFunction<UnregisterInputEventFunction>("UnregisterInputEvent");
                 if (func) {
                     func(id);
                 }
@@ -108,13 +108,13 @@ namespace SKSEMenuFramework {
 
         public:
             Event(EventCallback callback, float priority) {
-                static auto func = Internal::GetFunction<RegisterEventFuction>("RegisterEventPriority");
+                static auto func = Internal::GetFunction<RegisterEventFunction>("RegisterEventPriority");
                 if (func) {
                     id = func(callback, priority);
                 }
             }
             ~Event() {
-                static auto func = Internal::GetFunction<UnregisterEventFuction>("UnregisterEvent");
+                static auto func = Internal::GetFunction<UnregisterEventFunction>("UnregisterEvent");
                 if (func) {
                     func(id);
                 }
@@ -126,14 +126,14 @@ namespace SKSEMenuFramework {
 
         public:
             HudElement(HudElementCallback callback) {
-                static auto func = Internal::GetFunction<RegisterHudElementFuction>("RegisterHudElement");
+                static auto func = Internal::GetFunction<RegisterHudElementFunction>("RegisterHudElement");
                 if (func) {
                     id = func(callback);
                 }
             }
 
             ~HudElement() {
-                static auto func = Internal::GetFunction<UnregisterHudElementFuction>("UnregisterHudElement");
+                static auto func = Internal::GetFunction<UnregisterHudElementFunction>("UnregisterHudElement");
                 if (func) {
                     func(id);
                 }
@@ -204,7 +204,7 @@ namespace SKSEMenuFramework {
     }
 
     inline bool IsAnyBlockingWindowOpened() {
-        static auto func = Model::Internal::GetFunction<Model::IsAnyBlockingWindowOpenedFuction>("IsAnyBlockingWindowOpened");
+        static auto func = Model::Internal::GetFunction<Model::IsAnyBlockingWindowOpenedFunction>("IsAnyBlockingWindowOpened");
         if (func) {
             return func();
         }
@@ -212,7 +212,7 @@ namespace SKSEMenuFramework {
     }
 
     inline ImGuiMCP::ImTextureID LoadTexture(std::string texturePath, ImGuiMCP::ImVec2 size = {0, 0}) {
-        static auto func = Model::Internal::GetFunction<Model::LoadTextureFuction>("LoadTexture");
+        static auto func = Model::Internal::GetFunction<Model::LoadTextureFunction>("LoadTexture");
         if (func) {
             return func(texturePath.c_str(), &size);
         }
@@ -220,7 +220,7 @@ namespace SKSEMenuFramework {
     }
 
     inline void DisposeTexture(std::string texturePath) {
-        static auto func = Model::Internal::GetFunction<Model::DisposeTextureFuction>("DisposeTexture");
+        static auto func = Model::Internal::GetFunction<Model::DisposeTextureFunction>("DisposeTexture");
         if (func) {
             return func(texturePath.c_str());
         }
